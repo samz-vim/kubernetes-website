@@ -1,0 +1,51 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: k8s-project-two
+  namespace: devops-project
+  labels:
+    app: k8s-project-two
+
+spec:
+  replicas: 3
+
+  selector:
+    matchLabels:
+      app: k8s-project-two
+
+  template:
+    metadata:
+      labels:
+        app: k8s-project-two
+
+    spec:
+      containers:
+        - name: website
+          image: YOUR_DOCKERHUB_USERNAME/k8s-project-two:initial
+          imagePullPolicy: Always
+
+          ports:
+            - name: http
+              containerPort: 80
+
+          readinessProbe:
+            httpGet:
+              path: /
+              port: http
+            initialDelaySeconds: 5
+            periodSeconds: 10
+
+          livenessProbe:
+            httpGet:
+              path: /
+              port: http
+            initialDelaySeconds: 15
+            periodSeconds: 20
+
+          resources:
+            requests:
+              cpu: 50m
+              memory: 64Mi
+            limits:
+              cpu: 250m
+              memory: 128Mi
